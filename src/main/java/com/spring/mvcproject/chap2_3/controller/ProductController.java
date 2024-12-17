@@ -115,4 +115,28 @@ public class ProductController {
         return "상품이 생성되었습니다! - " + newProduct;
     }
 
+    // 상품 수정 요청
+    @PutMapping("/{id}")
+    public String updateProduct(
+            @PathVariable Long id,
+            @RequestParam("name") String newName,
+            @RequestParam("price") int newPrice
+    ) {
+        // 비즈니스 로직
+        Product foundProduct = productStore.get(id);
+        foundProduct.setName(newName);
+        foundProduct.setPrice(newPrice);
+
+        return "상품이 수정되었습니다. - " + foundProduct;
+    }
+
+    // 상품 삭제 요청
+    @DeleteMapping("/{id}")
+    public String deleteProduct(
+            @PathVariable Long id
+    ) {
+        productStore.remove(id);
+        return id + "번 상품이 삭제되었습니다.";
+    }
+
 }
