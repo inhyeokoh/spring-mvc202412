@@ -128,10 +128,14 @@
 
         // 화면에 성적목록을 렌더링하는 함수
         function renderScoreList(data) {
+
+            const $scores = document.getElementById('scores');
+            // 리셋
+            $scores.innerHTML = '';
+
             // 총 학생 수 렌더링
             document.getElementById('count').textContent = data.length;
 
-            const $scores = document.getElementById('scores');
 
             data.forEach(({id, name, kor, eng, math}) => {
                 $scores.innerHTML += `
@@ -146,13 +150,25 @@
 
         // 서버에서 성적 정보를 가져오는 요청 메서드
         async function fetchGetScores(sortType='id') {
-            const res = await fetch(API_URL + '?sort=\${sortType}');
+            const res = await fetch(API_URL + `?sort=\${sortType}`);
             const data = await res.json();
             console.log(data);
 
             // 화면에 정보 렌더링
             renderScoreList(data);
         }
+
+        //==== 이벤트 리스너 등록 ====//
+        document.querySelector('.sort-link-group').addEventListener('click', e => {
+            e.preventDefault();
+            if (!e.target.matches('a')) return;
+            const sortType = e.target.id;
+            console.log('정렬기준: ', sortType);
+            
+            // 서버에 정렬기준을 가지고 목록 조회요청 전송
+            fetchGetScores(sortType);
+
+        });
 
         //==== 실행 코드 ====//
         fetchGetScores();
