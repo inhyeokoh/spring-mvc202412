@@ -131,9 +131,6 @@
                         <i class="far fa-clock"></i>
                         2024-12-18
                       </div>
-
-                
-
                       <div class="view">
                         <i class="fas fa-eye"></i>
                         <span class="view-count">0</span>
@@ -154,7 +151,7 @@
 
               </div>
               <!-- end div.card-wrapper -->
-          </c:if>
+        
 
 
         </div>
