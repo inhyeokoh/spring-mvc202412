@@ -126,10 +126,11 @@
     <script>
         const API_URL = '/api/v1/scores';
 
+        const $scores = document.getElementById('scores');
+
         // 화면에 성적목록을 렌더링하는 함수
         function renderScoreList(data) {
 
-            const $scores = document.getElementById('scores');
             // 리셋
             $scores.innerHTML = '';
 
@@ -139,7 +140,7 @@
 
             data.forEach(({id, name, kor, eng, math}) => {
                 $scores.innerHTML += `
-                    <li>
+                    <li data-score-id="\${id}">
                         # 이름: \${name}, 국어: \${kor}점, 
                         영어: \${eng}점, 수학: \${math}점
                         <a href='#' class='del-btn'>삭제</a>
@@ -176,6 +177,17 @@
             }
         }
 
+        async function fetchDeleteScore(id) {
+            const res = await fetch(`\${API_URL}/\${id}`, {
+                method: 'DELETE'
+            });
+            if (res.status === 200) {
+                fetchGetScores();
+            } else {
+                alert('삭제 실패!');
+            }
+        }
+
         //==== 이벤트 리스너 등록 ====//
         // 정렬처리 이벤트
         document.querySelector('.sort-link-group').addEventListener('click', e => {
@@ -203,6 +215,19 @@
             // 서버로 POST요청 전송
             fetchPostScore(scoreObj);
             
+        });
+
+        // 삭제 요청 이벤트 등록
+        $scores.addEventListener('click', e => {
+            e.preventDefault();
+            if (!e.target.matches('.del-btn')) return;
+
+            // 서버에 삭제요청 전송
+            // 클릭한 요소가 가진 서버 id를 읽어내야 함.
+            const id = e.target.closest('li').dataset.scoreId;
+            console.log('id: ', id);
+            
+            fetchDeleteScore(id);
         });
 
         //==== 실행 코드 ====//
