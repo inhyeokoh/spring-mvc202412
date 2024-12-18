@@ -122,7 +122,7 @@
 
         <div class="card-container">
 
-              <div class="card-wrapper">
+              <!-- <div class="card-wrapper">
                 <section class="card" data-bno="1">
                   <div class="card-title-wrapper">
                     <h2 class="card-title">하하호호</h2>
@@ -141,16 +141,17 @@
                     가나다라마바사
                   </div>
                 </section>
-
-                <!-- 관리자이거나 본인이 쓴글에만 렌더링되도록 -->
+          
                 <div class="card-btn-group">
                   <button class="del-btn">
                     <i class="fas fa-times"></i>
                   </button>
                 </div>
 
-              </div>
+              </div> -->
               <!-- end div.card-wrapper -->
+
+              
         
 
 
@@ -189,6 +190,9 @@
 
       <script>
 
+        //====== 관련 전역변수 =====//
+        const API_BASE_URL = '/api/v1/boards';
+
         const $cardContainer = document.querySelector('.card-container');
 
         //================= 삭제버튼 스크립트 =================//
@@ -202,10 +206,30 @@
             console.log('삭제버튼 클릭');
             modal.style.display = 'flex'; // 모달 창 띄움
 
+            // 여기서 클릭한 x버튼의 근처에 있는 card의 ID를 찾기
+            const id = e.target
+                .closest('.card-wrapper')
+                .querySelector('.card')
+                .dataset.bno;
+            
+
             // 확인 버튼 이벤트
             confirmDelete.onclick = e => {
-              // 삭제 처리 로직
+              // 삭제 처리 로직 - 서버에 DELETE요청
+              const fetchDeleteBoard = async (id) => {
+                const res = await fetch(`\${API_BASE_URL}/\${id}`, {
+                  method: 'DELETE'
+                });
+                if (res.status === 200) {
+                  fetchGetBoardList();
+                } else {
+                  alert('삭제 실패!');
+                }
+              };
 
+            
+              fetchDeleteBoard(id);
+            
               modal.style.display = 'none'; // 모달 창 닫기
             };
 
@@ -271,9 +295,64 @@
         document.querySelector('.add-btn').onclick = e => {
           window.location.href = '/board/write';
         };
+        
 
+        //====== 일반 함수 ======//
+        // 화면에 게시물배열을 렌더링
+        function renderBoardList(boardList) {
+          $cardContainer.innerHTML = ''; // reset
+
+          boardList.forEach(({id, title, content, regDateTime, viewCount}) => {
+            $cardContainer.innerHTML += `
+              <div class="card-wrapper">
+                <section class="card" data-bno="\${id}">
+                  <div class="card-title-wrapper">
+                    <h2 class="card-title">\${title}</h2>
+                    <div class="time-view-wrapper">
+                      <div class="time">
+                        <i class="far fa-clock"></i>
+                        \${regDateTime}
+                      </div>
+                      <div class="view">
+                        <i class="fas fa-eye"></i>
+                        <span class="view-count">\${viewCount}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-content">
+                    \${content}
+                  </div>
+                </section>
+          
+                <div class="card-btn-group">
+                  <button class="del-btn">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+
+              </div>
+            `;
+          });
+        }
+
+        //====== 서버 API통신 관련 함수 ======//
+        async function fetchGetBoardList() {
+          const res = await fetch(API_BASE_URL);
+          const data = await res.json();
+          console.log(data);
+
+          // 렌더링
+          renderBoardList(data);
+        }
+
+
+        // ====== 메인 실행 코드 ===== //
+        // 서버에 목록 조회 API요청 보내기
+        fetchGetBoardList();
 
       </script>
+
+
 
     </body>
 
