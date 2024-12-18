@@ -81,7 +81,7 @@
 
         <section class="score">
             <h1>시험 점수 등록</h1>
-            <form>
+            <form id="score-form">
                 <label>
                     # 이름: <input type="text" name="name">
                 </label>
@@ -95,7 +95,7 @@
                     # 수학: <input type="text" name="math">
                 </label>
                 <label>
-                    <button type="submit">확인</button>
+                    <button id="createBtn" type="submit">확인</button>
                     <button id="go-home" type="button">홈화면으로</button>
                 </label>
             </form>
@@ -158,7 +158,26 @@
             renderScoreList(data);
         }
 
+        // 서버로 성적 등록 POST요청을 전송하는 함수
+        async function fetchPostScore(scoreObj) {
+            // POST요청은 단순히 요청만보내는게 아니라
+            // 서버에 데이터를 제공해야함
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(scoreObj)
+            });
+            if (res.status === 200) {
+                // 등록된 내용을 렌더링
+                fetchGetScores();
+                document.getElementById('score-form').reset();
+            } else {
+                alert('에러가 발생했습니다!');
+            }
+        }
+
         //==== 이벤트 리스너 등록 ====//
+        // 정렬처리 이벤트
         document.querySelector('.sort-link-group').addEventListener('click', e => {
             e.preventDefault();
             if (!e.target.matches('a')) return;
@@ -168,6 +187,22 @@
             // 서버에 정렬기준을 가지고 목록 조회요청 전송
             fetchGetScores(sortType);
 
+        });
+
+        // 성적 정보 등록 이벤트
+        document.getElementById('createBtn').addEventListener('click', e => {
+            
+            e.preventDefault(); // form의 submit시 발생하는 새로고침 방지
+
+            const $form = document.getElementById('score-form');
+            // formData객체 생성
+            const formData = new FormData($form);
+            const scoreObj = Object.fromEntries(formData.entries());
+            console.log(scoreObj);
+
+            // 서버로 POST요청 전송
+            fetchPostScore(scoreObj);
+            
         });
 
         //==== 실행 코드 ====//
