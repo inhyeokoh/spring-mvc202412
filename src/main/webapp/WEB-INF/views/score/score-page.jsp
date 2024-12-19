@@ -72,6 +72,9 @@
             margin-right: 20px;
         }
 
+        .error {
+            color: red;
+        }
     </style>
 </head>
 
@@ -93,15 +96,19 @@
             <form id="score-form">
                 <label>
                     # 이름: <input type="text" name="name">
+                    <p class="error" id="studentName"></p>
                 </label>
                 <label>
                     # 국어: <input type="text" name="kor">
+                    <p class="error" id="korean"></p>
                 </label>
                 <label>
                     # 영어: <input type="text" name="eng">
+                    <p class="error" id="english"></p>
                 </label>
                 <label>
                     # 수학: <input type="text" name="math">
+                    <p class="error" id="math"></p>
                 </label>
                 <label>
                     <button id="createBtn" type="submit">확인</button>
@@ -170,6 +177,12 @@
 
         // 서버로 성적 등록 POST요청을 전송하는 함수
         async function fetchPostScore({name, kor, eng, math}) {
+
+            // 요청 시작시 에러메시지 리셋
+            document.querySelectorAll('.error').forEach($errorParagraph => {
+                $errorParagraph.textContent = '';
+            });
+
             // POST요청은 단순히 요청만보내는게 아니라
             // 서버에 데이터를 제공해야함
             const res = await fetch(API_URL, {
@@ -186,9 +199,13 @@
                 // 등록된 내용을 렌더링
                 fetchGetScores();
                 document.getElementById('score-form').reset();
-            } else {
-                alert('에러가 발생했습니다!');
-            }
+            } else if (res.status === 400) {
+                // 서버의 에러 메시지 파싱
+                const errorJson = await res.json();
+                for (const property in errorJson) {
+                    document.getElementById(property).textContent = errorJson[property];
+                }
+            } 
         }
 
         async function fetchDeleteScore(id) {
