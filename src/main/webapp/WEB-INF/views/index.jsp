@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -16,11 +19,13 @@
     </ul>
 
     <script>
-        fetch('http://localhost:9000/api/v1/scores', { method: 'GET' })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-            });
+      
+      fetch('/api/v1/boards')
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+        });
+
     </script>
 </body>
 </html>
