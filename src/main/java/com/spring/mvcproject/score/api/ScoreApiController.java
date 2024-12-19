@@ -68,7 +68,7 @@ public class ScoreApiController {
         }
 
         // ScoreCreateDto를 Score로 변환하는 작업
-        Score score = new Score(dto);
+        Score score = dto.toEntity();
         score.setId(nextId++);
 
         scoreStore.put(score.getId(), score);
