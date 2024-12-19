@@ -80,7 +80,16 @@
     <div class="wrap">
 
         <section class="score">
-            <h1>시험 점수 등록</h1>
+            <h1>${title} 애플리케이션</h1>
+
+            <%--  JSP 주석
+            <ul>
+                <c:forEach var="f" items="${foods}">
+                    <li>${f}</li>
+                </c:forEach>
+            </ul>
+            --%>
+
             <form id="score-form">
                 <label>
                     # 이름: <input type="text" name="name">
@@ -160,13 +169,18 @@
         }
 
         // 서버로 성적 등록 POST요청을 전송하는 함수
-        async function fetchPostScore(scoreObj) {
+        async function fetchPostScore({name, kor, eng, math}) {
             // POST요청은 단순히 요청만보내는게 아니라
             // 서버에 데이터를 제공해야함
             const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(scoreObj)
+                body: JSON.stringify({
+                    studentName: name,
+                    korean: kor,
+                    english: eng,
+                    math: math
+                })
             });
             if (res.status === 200) {
                 // 등록된 내용을 렌더링

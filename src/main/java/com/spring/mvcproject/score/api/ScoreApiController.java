@@ -1,5 +1,6 @@
 package com.spring.mvcproject.score.api;
 
+import com.spring.mvcproject.score.dto.request.ScoreCreateDto;
 import com.spring.mvcproject.score.entity.Score;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -47,9 +48,12 @@ public class ScoreApiController {
     @PostMapping
     public String createScore(
             // 클라이언트가 성적정보를 JSON으로 보냈다
-            @RequestBody Score score
+            @RequestBody ScoreCreateDto dto
     ) {
+        // ScoreCreateDto를 Score로 변환하는 작업
+        Score score = new Score(dto);
         score.setId(nextId++);
+
         scoreStore.put(score.getId(), score);
         return "성적 정보 생성 완료! " + score;
     }
