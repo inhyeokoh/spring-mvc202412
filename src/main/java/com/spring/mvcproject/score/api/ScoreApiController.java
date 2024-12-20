@@ -1,6 +1,7 @@
 package com.spring.mvcproject.score.api;
 
 import com.spring.mvcproject.score.dto.request.ScoreCreateDto;
+import com.spring.mvcproject.score.dto.response.ScoreListDto;
 import com.spring.mvcproject.score.entity.Score;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -35,17 +36,33 @@ public class ScoreApiController {
     // 전체 성적정보 조회 (정렬 파라미터를 읽어야 함)
     // /api/v1/scores?sort=name
     @GetMapping
-    public List<Score> scoreList(
+    public ResponseEntity<List<ScoreListDto>> scoreList(
             @RequestParam(required = false, defaultValue = "id") String sort
     ) {
 
         System.out.println("정렬기준: " + sort);
 
-        return new ArrayList<>(scoreStore.values())
+        /*
+        // 데이터베이스에서 성적 정보를 모두 꺼내옴
+        List<Score> originalScores = new ArrayList<>(scoreStore.values());
+        // 새로운 DTO리스트를 생성
+        List<ScoreListDto> responseList = new ArrayList<>();
+        for (Score score : originalScores) {
+            ScoreListDto dto = new ScoreListDto(score);
+            responseList.add(dto);
+        }
+        */
+
+        List<ScoreListDto> responseList = new ArrayList<>(scoreStore.values())
                 .stream()
+                .map(score -> new ScoreListDto(score))
                 .sorted(getScoreComparator(sort))
-                .collect(Collectors.toList())
-                ;
+                .collect(Collectors.toList());
+
+
+        return ResponseEntity
+                .ok()
+                .body(responseList);
     }
 
     // 성적 정보 생성 요청 처리
@@ -92,15 +109,17 @@ public class ScoreApiController {
 
 
     // 정렬 처리를 위한 정렬기 생성 유틸 메서드
-    private Comparator<Score> getScoreComparator(String sort) {
-        Comparator<Score> comparing = null;
+    private Comparator<ScoreListDto> getScoreComparator(String sort) {
+        Comparator<ScoreListDto> comparing = null;
         switch (sort) {
             case "id":
-                comparing = Comparator.comparing(Score::getId);
+                comparing = Comparator.comparing(ScoreListDto::getId);
                 break;
             case "name":
-                comparing = Comparator.comparing(Score::getName);
+                comparing = Comparator.comparing(ScoreListDto::getMaskingName);
                 break;
+            case "average":
+                comparing = Comparator.comparing(ScoreListDto::getAverage).reversed();
         }
         return comparing;
     }
