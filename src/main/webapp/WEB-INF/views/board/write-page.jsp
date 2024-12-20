@@ -210,6 +210,7 @@
           const API_BASE_URL = '/api/v1/boards';
           const $form = document.getElementById('board-form');
 
+          // POST 요청 서버로 보내기 함수
           async function fetchPost(payload) {
             const res = await fetch(API_BASE_URL, {
               method: 'POST',

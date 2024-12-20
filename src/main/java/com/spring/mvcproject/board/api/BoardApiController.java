@@ -1,5 +1,6 @@
 package com.spring.mvcproject.board.api;
 
+import com.spring.mvcproject.board.dto.request.BoardSaveDto;
 import com.spring.mvcproject.board.entity.Board;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,10 +53,12 @@ public class BoardApiController {
     // 게시물 등록 POST
     @PostMapping
     public String createBoard(
-            @RequestBody Board board
+            @RequestBody BoardSaveDto dto
     ) {
+        System.out.println("dto = " + dto);
+
+        Board board = dto.toEntity();
         board.setId(nextId++);
-        board.setRegDateTime(LocalDateTime.now());
 
         System.out.println("board = " + board);
         boardStore.put(board.getId(), board);
