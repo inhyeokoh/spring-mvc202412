@@ -1,6 +1,8 @@
 package com.spring.mvcproject.board.dto.request;
 
 import com.spring.mvcproject.board.entity.Board;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +17,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BoardSaveDto {
 
+    // NotBlank는 빈문자열만 방지 ""
+    // NotNull은 null값만 방지
+    // NotEmpty는 둘다 방지
+    @NotEmpty(message = "제목은 필수입니다.")
+    @Size(min = 3, max = 15, message = "글자 수는 3~15자 사이여야 합니다.")
     private String title;
+
+    @NotEmpty(message = "내용은 필수입니다.")
     private String content;
 
 

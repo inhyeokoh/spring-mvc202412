@@ -120,6 +120,15 @@
         .ck-editor__editable p {
           margin: 0;
         }
+        .error {
+          color: #f00;
+          font-size: 0.9em;
+          margin-left: 15px;
+        }
+        .label-container {
+          display: flex;
+          align-items: center;
+        }
     </style>
 </head>
 
@@ -167,9 +176,15 @@
             <form id="board-form" novalidate>
                 <label for="title">작성자</label>
                 <input type="text" id="writer" name="writer" value="익명">
-                <label for="title">제목</label>
+
+                <div class="label-container">
+                  <label for="title">제목</label> <span class="error" id="title"></span>
+                </div>
                 <input type="text" id="title" name="title" required>
-                <label for="content">내용</label>
+                
+                <div class="label-container">
+                  <label for="content">내용 </label> 
+                </div>
                 <textarea id="content" name="content" maxlength="200" required></textarea>
                 <div class="buttons">
                     <button class="list-btn" type="button"
@@ -210,6 +225,27 @@
           const API_BASE_URL = '/api/v1/boards';
           const $form = document.getElementById('board-form');
 
+          // 에러 메시지 처리
+          function createErrorMessage(errorObj) {
+            // 기존 에러 메시지 정리
+            const $errors = document.querySelectorAll('.error');
+            $errors.forEach($err => $err.textContent = '');
+
+          
+            // 새 에러메시지 세팅
+            for (const key in errorObj) {
+              if (key === 'content') {
+                const $errorSpan = document.createElement('span');
+                $errorSpan.classList.add('error');
+                $errorSpan.textContent = errorObj[key];
+                document.querySelector('label[for=content]').after($errorSpan);
+              }
+              document.getElementById(key).textContent = errorObj[key];
+              
+            }
+          }
+
+
           // POST 요청 서버로 보내기 함수
           async function fetchPost(payload) {
             const res = await fetch(API_BASE_URL, {
@@ -221,8 +257,9 @@
               alert('게시물이 등록되었습니다.');
               // 목록으로 링크이동
               window.location.href='/board/list';
-            } else {
-              alert('등록 실패!');
+            } else if (res.status === 400) {
+              const errorObj = await res.json();
+              createErrorMessage(errorObj);
             }
           }
 
