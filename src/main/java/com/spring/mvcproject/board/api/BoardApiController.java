@@ -1,6 +1,7 @@
 package com.spring.mvcproject.board.api;
 
 import com.spring.mvcproject.board.dto.request.BoardSaveDto;
+import com.spring.mvcproject.board.dto.response.BoardListDto;
 import com.spring.mvcproject.board.entity.Board;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,9 @@ public class BoardApiController {
 
     public BoardApiController() {
         Board b1 = Board.of(nextId++, "꿀잼게시물", "개노잼이야 사실");
+        b1.setRegDateTime(LocalDateTime.of(2023, 11, 11, 0,0,0));
         Board b2 = Board.of(nextId++, "앙영하긔", "긔긔요미미미ㅣ");
+        b2.setRegDateTime(LocalDateTime.of(2024, 3, 15, 0,0,0));
         Board b3 = Board.of(nextId++, "이마트 갈때...", "홈플러스 쿠폰써도 되나요");
 
         boardStore.put(b1.getId(), b1);
@@ -34,12 +37,15 @@ public class BoardApiController {
 
     // 게시물 목록조회 GET
     @GetMapping
-    public List<Board> boardList() {
+    public ResponseEntity<?> boardList() {
         // 게시물 목록은 최신글이 가장 위에 있어야 함
-        return new ArrayList<>(boardStore.values())
+        List<BoardListDto> collect = new ArrayList<>(boardStore.values())
                 .stream()
                 .sorted(comparing(Board::getRegDateTime).reversed())
-                .collect(toList())
+                .map(b -> new BoardListDto(b))
+                .collect(toList());
+
+        return ResponseEntity.ok().body(collect)
                 ;
     }
 
