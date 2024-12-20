@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.*;
+
 @RestController // JSON응답
 @RequestMapping("/api/v1/scores")
 public class ScoreApiController {
@@ -56,14 +58,30 @@ public class ScoreApiController {
         List<ScoreListDto> responseList = new ArrayList<>(scoreStore.values())
                 .stream()
                 .map(score -> new ScoreListDto(score))
-                .sorted(getScoreComparator(sort))
                 .collect(Collectors.toList());
 
+        // 석차 구하기
+        calculateRank(responseList);
+
+        // 정렬 파라미터 처리
+        responseList.sort(getScoreComparator(sort));
 
         return ResponseEntity
                 .ok()
                 .body(responseList);
     }
+
+    private static void calculateRank(List<ScoreListDto> responseList) {
+        // 석차 구하기
+        // 총점 내림차로 정렬
+        responseList.sort(comparing(ScoreListDto::getAverage).reversed());
+
+        int currentRank = 1; // 현재 등수
+        for (ScoreListDto dto : responseList) {
+            dto.setRank(currentRank++);
+        }
+    }
+
 
     // 성적 정보 생성 요청 처리
     @PostMapping
@@ -113,13 +131,13 @@ public class ScoreApiController {
         Comparator<ScoreListDto> comparing = null;
         switch (sort) {
             case "id":
-                comparing = Comparator.comparing(ScoreListDto::getId);
+                comparing = comparing(ScoreListDto::getId);
                 break;
             case "name":
-                comparing = Comparator.comparing(ScoreListDto::getMaskingName);
+                comparing = comparing(ScoreListDto::getMaskingName);
                 break;
             case "average":
-                comparing = Comparator.comparing(ScoreListDto::getAverage).reversed();
+                comparing = comparing(ScoreListDto::getAverage).reversed();
         }
         return comparing;
     }

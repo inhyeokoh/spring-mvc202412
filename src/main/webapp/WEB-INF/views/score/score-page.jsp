@@ -154,11 +154,11 @@
             document.getElementById('count').textContent = data.length;
 
 
-            data.forEach(({id, maskingName, total, average, rank}) => {
+            data.forEach(({id, maskingName, sum, avg, rank}) => {
                 $scores.innerHTML += `
                     <li data-score-id="\${id}">
-                        # 이름: \${maskingName}, 총점: \${total}점, 
-                        평균: \${average}점, 석차: \${rank}
+                        # 이름: \${maskingName}, 총점: \${sum}점, 
+                        평균: \${avg}점, 석차: \${rank}
                         <a href='#' class='del-btn'>삭제</a>
                     </li>
                 `;

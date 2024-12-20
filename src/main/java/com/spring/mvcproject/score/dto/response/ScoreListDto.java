@@ -1,5 +1,6 @@
 package com.spring.mvcproject.score.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.spring.mvcproject.score.entity.Score;
 import lombok.*;
 
@@ -11,7 +12,11 @@ import lombok.*;
 public class ScoreListDto {
     private Long id; // 학번
     private String maskingName; // 가려진 이름
+
+    @JsonProperty("sum")
     private int total; // 총점
+
+    @JsonProperty("avg")
     private double average; // 평균 소수점 2자리까지만
     private int rank; // 석차
 
