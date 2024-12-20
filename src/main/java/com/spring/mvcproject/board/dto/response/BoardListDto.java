@@ -1,12 +1,10 @@
 package com.spring.mvcproject.board.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.spring.mvcproject.board.entity.Board;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter @ToString
 @EqualsAndHashCode
