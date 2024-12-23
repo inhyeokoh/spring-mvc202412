@@ -1,6 +1,7 @@
 package com.spring.mvcproject.board.api;
 
 import com.spring.mvcproject.board.dto.request.BoardSaveDto;
+import com.spring.mvcproject.board.dto.response.BoardDetailResponse;
 import com.spring.mvcproject.board.dto.response.BoardListDto;
 import com.spring.mvcproject.board.entity.Board;
 import jakarta.validation.Valid;
@@ -90,4 +91,24 @@ public class BoardApiController {
         return ResponseEntity.ok().body("게시물 등록 성공! - "+ board);
 
     }
+
+    // 게시물 상세조회 요청처리
+    @GetMapping("/{id}")
+    public ResponseEntity<?> detail(@PathVariable Long id) {
+        // 특정 게시물 찾아오기
+        Board foundBoard = boardStore.get(id);
+
+        // 게시물이 없을 경우
+        if (foundBoard == null) {
+            return ResponseEntity
+                    .badRequest() // 400
+                    .body(id + "번 게시물은 존재하지 않습니다.");
+        }
+
+        // 게시물 원본데이터를 클라이언트 스펙에 맞게 변환
+        return ResponseEntity
+                .ok()
+                .body(BoardDetailResponse.from(foundBoard));
+    }
+
 }
