@@ -65,8 +65,8 @@ public class BoardApiController {
     // 게시물 등록 POST
     @PostMapping
     public ResponseEntity<?> createBoard(
-            @RequestBody @Valid BoardSaveDto dto,
-            BindingResult bindingResult
+            @RequestBody @Valid BoardSaveDto dto
+            , BindingResult bindingResult
     ) {
         // 입력값 검증 응답 처리
         if (bindingResult.hasErrors()) {
