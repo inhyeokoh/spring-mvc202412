@@ -2,6 +2,7 @@ package com.spring.mvcproject.database.springjdbc.repository;
 
 import com.spring.mvcproject.database.springjdbc.entity.Product;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -65,9 +66,14 @@ public class ProductRepository {
 
     // 다중 SELECT
     public List<Product> findAll() {
+//        return jdbcTemplate.query("""
+//                SELECT * FROM products
+//                """,
+//                (rs, rowNum) -> new Product(rs));
         return jdbcTemplate.query("""
                 SELECT * FROM products
-                """, (rs, rowNum) -> new Product(rs));
+                """,
+                new BeanPropertyRowMapper<>(Product.class));
     }
 
     // 단일 SELECT

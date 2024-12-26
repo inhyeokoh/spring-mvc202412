@@ -53,7 +53,6 @@ class ProductRepositoryTest {
     @Test
     void findAllTest() {
         List<Product> productList = productRepository.findAll();
-
         productList.forEach(System.out::println);
     }
 
