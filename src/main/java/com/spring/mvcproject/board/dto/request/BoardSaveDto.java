@@ -33,8 +33,6 @@ public class BoardSaveDto {
         Board b = new Board();
         b.setTitle(this.title);
         b.setContent(this.content);
-        b.setViewCount(0);
-        b.setRegDateTime(LocalDateTime.now());
         return b;
     }
 
