@@ -78,10 +78,12 @@ public class ProductRepository {
 
     // 단일 SELECT
     public Product findById(Long id) {
-        return jdbcTemplate.queryForObject("""
+        String sql = """
                 SELECT * FROM products
                 WHERE id = ?
-                """,
+                """;
+
+        return jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) -> new Product(rs),
                 id
         );
