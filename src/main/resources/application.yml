@@ -25,6 +25,6 @@ spring:
 mybatis:
   # sql file location
   mapper-locations: classpath:mapper/**/*.xml
-  type-aliases-package: com.spring.mvcproject
+  type-aliases-package: com.spring.mvcproject.database.mybatis
   configuration:
     map-underscore-to-camel-case: true
