@@ -1,12 +1,13 @@
 package com.spring.mvcproject.database.mybatis.api;
 
+import com.spring.mvcproject.database.mybatis.PetRepository;
+import com.spring.mvcproject.database.mybatis.dto.response.PetListResponse;
+import com.spring.mvcproject.database.mybatis.dto.response.PetResponse;
 import com.spring.mvcproject.database.mybatis.entity.Pet;
 import com.spring.mvcproject.database.mybatis.service.PetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/pets")
@@ -18,7 +19,8 @@ public class PetApiController {
     // 목록 조회
     @GetMapping
     public ResponseEntity<?> list() {
-        List<Pet> list = petService.getList();
+
+        PetListResponse list = petService.getList();
 
         return ResponseEntity.ok().body(list);
     }
