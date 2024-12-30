@@ -1,6 +1,7 @@
 package com.spring.mvcproject.database.mybatis.api;
 
 import com.spring.mvcproject.database.mybatis.PetRepository;
+import com.spring.mvcproject.database.mybatis.dto.response.PetDetailResponse;
 import com.spring.mvcproject.database.mybatis.dto.response.PetListResponse;
 import com.spring.mvcproject.database.mybatis.dto.response.PetResponse;
 import com.spring.mvcproject.database.mybatis.entity.Pet;
@@ -28,7 +29,8 @@ public class PetApiController {
     // 개별 조회
     @GetMapping("/{id}")
     public ResponseEntity<?> findOne(@PathVariable Long id) {
-        Pet pet = petService.getPet(id);
+
+        PetDetailResponse pet = petService.getPet(id);
 
         return ResponseEntity.ok().body(pet);
     }
