@@ -12,7 +12,6 @@ import java.io.File;
 // 파일업로드 관련 설정 클래스
 @Getter @Setter
 @Configuration
-//@ConfigurationProperties(prefix = "file.upload")
 public class FileUploadConfig {
 
     // application.yml에 있는 설정 값을 가져옴
